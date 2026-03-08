@@ -11,6 +11,11 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Profile Dashboard',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
       home: const ProfileScreen(),
     );
   }
@@ -25,135 +30,239 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Profile Dashboard")),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showSnack(context, "FloatingActionButton clicked"),
-        child: const Icon(Icons.star),
+  Widget buildInfoTile({
+    required IconData icon,
+    required String title,
+    required String value,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: InkWell(
-          onTap: () => _showSnack(context, "Profile card tapped"),
-          child: Container(
-            margin: const EdgeInsets.only(top: 8),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              border: Border.all(color: Colors.grey.shade400),
-              borderRadius: BorderRadius.circular(16),
-            ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: Colors.blue.shade50,
+            child: Icon(icon, color: Colors.blue),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      GestureDetector(
-                        onDoubleTap: () =>
-                            _showSnack(context, "Profile image double tapped"),
-                        child: CircleAvatar(
-                          radius: 54,
-                          backgroundImage: const AssetImage("assets/profile.jpg"),
-                        ),
-                      ),
-                      Positioned(
-                        right: 2,
-                        bottom: 2,
-                        child: Container(
-                          width: 18,
-                          height: 18,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(9),
-                            border: Border.all(color: Colors.white, width: 2),
-                          ),
-                        ),
-                      ),
-                    ],
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 16),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Mohammad Elzogheir",
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-                      ),
-                      SizedBox(height: 6),
-                      Text(
-                        "Flutter Developer (Trainee)",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                    ],
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
                   ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.email),
-                          const SizedBox(width: 10),
-                          const Expanded(child: Text("moh.elzogheir@gmail.com")),
-                          IconButton(
-                            onPressed: () => _showSnack(context, "Email icon clicked"),
-                            icon: const Icon(Icons.open_in_new),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.phone),
-                          const SizedBox(width: 10),
-                          const Expanded(child: Text("+962 78 855 2767")),
-                          IconButton(
-                            onPressed: () => _showSnack(context, "Phone icon clicked"),
-                            icon: const Icon(Icons.call),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on),
-                          const SizedBox(width: 10),
-                          const Expanded(child: Text("Amman, Jordan")),
-                          IconButton(
-                            onPressed: () => _showSnack(context, "Location icon clicked"),
-                            icon: const Icon(Icons.map),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const CounterScreen()),
-                    );
-                  },
-                  child: const Text("Go To Counter Screen"),
                 ),
               ],
             ),
+          ),
+          IconButton(
+            onPressed: onTap,
+            icon: const Icon(Icons.arrow_forward_ios, size: 18),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildStatCard(String number, String label, IconData icon) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 18),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: Colors.blue, size: 28),
+            const SizedBox(height: 10),
+            Text(
+              number,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xfff5f7fb),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          "Profile Dashboard",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showSnack(context, "Main action clicked"),
+        child: const Icon(Icons.add),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xff1976d2), Color(0xff42a5f5)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
+                  children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        CircleAvatar(
+                          radius: 52,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            radius: 48,
+                            backgroundImage: const AssetImage(
+                              "assets/profile.jpg",
+                            ),
+                            onBackgroundImageError: (_, __) {},
+                          ),
+                        ),
+                        Positioned(
+                          right: 4,
+                          bottom: 4,
+                          child: Container(
+                            width: 18,
+                            height: 18,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Mohammad Elzogheir",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      "Flutter Developer | Trainee",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        buildStatCard("12", "Projects", Icons.folder_open),
+                        const SizedBox(width: 12),
+                        buildStatCard("5", "Skills", Icons.star),
+                        const SizedBox(width: 12),
+                        buildStatCard("3", "Apps", Icons.phone_android),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              buildInfoTile(
+                icon: Icons.email_outlined,
+                title: "Email",
+                value: "moh.elzogheir@gmail.com",
+                onTap: () => _showSnack(context, "Email clicked"),
+              ),
+              buildInfoTile(
+                icon: Icons.phone_outlined,
+                title: "Phone",
+                value: "+962 78 855 2767",
+                onTap: () => _showSnack(context, "Phone clicked"),
+              ),
+              buildInfoTile(
+                icon: Icons.location_on_outlined,
+                title: "Location",
+                value: "Amman, Jordan",
+                onTap: () => _showSnack(context, "Location clicked"),
+              ),
+              buildInfoTile(
+                icon: Icons.code,
+                title: "Specialization",
+                value: "Flutter & Mobile Development",
+                onTap: () => _showSnack(context, "Specialization clicked"),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const CounterScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.arrow_forward),
+                  label: const Text(
+                    "Go To Counter Screen",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -171,60 +280,107 @@ class CounterScreen extends StatefulWidget {
 class _CounterScreenState extends State<CounterScreen> {
   int counter = 0;
 
-  void inc() {
-    setState(() => counter++);
+  void increment() {
+    setState(() {
+      counter++;
+    });
+  }
+
+  void decrement() {
+    setState(() {
+      if (counter > 0) {
+        counter--;
+      }
+    });
   }
 
   void reset() {
-    setState(() => counter = 0);
+    setState(() {
+      counter = 0;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Counter Panel")),
+      backgroundColor: const Color(0xfff5f7fb),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          "Counter Screen",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: reset,
         child: const Icon(Icons.refresh),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          margin: const EdgeInsets.only(top: 8),
+      body: Center(
+        child: Padding(
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            border: Border.all(color: Colors.grey.shade400),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Counter Value",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                "$counter",
-                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w800),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: inc,
-                    icon: const Icon(Icons.add_circle, size: 34),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.grey.shade300),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.calculate, size: 60, color: Colors.blue),
+                const SizedBox(height: 16),
+                const Text(
+                  "Counter Value",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
                   ),
-                  const SizedBox(width: 16),
-                  ElevatedButton(
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  "$counter",
+                  style: const TextStyle(
+                    fontSize: 52,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: decrement,
+                        child: const Text("Minus"),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: increment,
+                        child: const Text("Plus"),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
                     onPressed: reset,
                     child: const Text("Reset"),
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
